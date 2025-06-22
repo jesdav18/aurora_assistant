@@ -50,6 +50,48 @@ Aurora puede responder preguntas como:
 - "Dame mis coordenadas"
 - "¿En qué dirección me encuentro?"
 
+**Mejoras en la precisión de ubicación:**
+- **Geocodificación inteligente**: Convierte automáticamente coordenadas GPS a nombres de lugares legibles
+- **Múltiples servicios de respaldo**: Usa Mapbox y OpenStreetMap Nominatim para mayor confiabilidad
+- **Respuestas naturales**: Para consultas simples como "¿dónde estoy?", responde con el nombre del lugar en lugar de coordenadas técnicas
+- **Formateo inteligente**: Limpia y formatea las direcciones para que sean más legibles
+- **Detección contextual**: Distingue entre consultas simples de ubicación y solicitudes técnicas de coordenadas
+
+**Ejemplos de respuestas:**
+- Pregunta: "¿Dónde estoy?" → Respuesta: "Estás en: Calle Mayor 123, Madrid, España"
+- Pregunta: "Dame mis coordenadas" → Respuesta: "Coordenadas: 40.4168°N, 3.7038°W"
+
+### 🗺️ **Navegación y Rutas**
+
+Aurora ahora incluye capacidades avanzadas de navegación:
+
+**Búsqueda de lugares:**
+- "Buscar restaurante italiano"
+- "Encontrar gasolinera"
+- "¿Dónde está el hospital más cercano?"
+
+**Cálculo de rutas:**
+- "Ruta a Madrid"
+- "¿Cómo llego al aeropuerto?"
+- "Mejor ruta a Barcelona"
+- "Calcular ruta a Valencia"
+
+**Rutas con waypoints:**
+- "Ruta a Madrid pasando por Toledo"
+- "Ir a Barcelona a través de Zaragoza"
+- "Ruta a Valencia por donde pase por Alicante"
+
+**Características de navegación:**
+- **Cálculo de distancias y tiempos** en tiempo real
+- **Múltiples rutas alternativas** para el mismo destino
+- **Waypoints intermedios** para rutas complejas
+- **Búsqueda inteligente de lugares** con resultados relevantes
+- **Integración con ubicación GPS** para rutas desde tu posición actual
+
+**Ejemplos de respuestas de navegación:**
+- Pregunta: "Ruta a Madrid" → Respuesta: "Ruta hacia Madrid: Distancia: 45.2 km, Tiempo estimado: 35 minutos"
+- Pregunta: "Buscar restaurante" → Respuesta: "Encontré estos lugares: 1. Restaurante El Rincón, 2. Pizzería Bella Vista..."
+
 ## Permisos requeridos
 
 - **Micrófono**: Para grabar tu voz
