@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'location_service.dart';
 import '../config/app_config.dart';
+import 'api_interceptor.dart';
 
 class NavigationService {
   final LocationService _locationService = LocationService();
@@ -272,6 +273,8 @@ class NavigationService {
   Future<Map<String, dynamic>?> _getRouteFromMapbox(LatLng origin, LatLng destination) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       final coordinatesString = '${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}';
       
@@ -324,6 +327,8 @@ class NavigationService {
   Future<Map<String, dynamic>?> _getRouteFromOpenRouteService(LatLng origin, LatLng destination) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       final response = await dio.post(
         'https://api.openrouteservice.org/v2/directions/driving-car/geojson',

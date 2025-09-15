@@ -2,6 +2,7 @@ import 'package:location/location.dart';
 import 'package:dio/dio.dart';
 import 'dart:math' as math;
 import '../config/app_config.dart';
+import 'api_interceptor.dart';
 
 class LocationService {
   final Location _location = Location();
@@ -86,6 +87,8 @@ class LocationService {
   Future<String?> _getAddressFromMapbox(double lat, double lon) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       final response = await dio.get(
         '${AppConfig.mapboxGeocodingUrl}/$lon,$lat.json',
@@ -119,6 +122,8 @@ class LocationService {
   Future<String?> _getAddressFromNominatim(double lat, double lon) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       final response = await dio.get(
         AppConfig.nominatimUrl,
@@ -260,6 +265,8 @@ class LocationService {
   Future<String> searchPlace(String query) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       final response = await dio.get(
         '${AppConfig.mapboxGeocodingUrl}/$query.json',
@@ -382,6 +389,8 @@ class LocationService {
       // Intentar primero con Mapbox
       try {
         final dio = Dio();
+        // Agregar interceptor para trackear uso de APIs
+        dio.interceptors.add(ApiUsageInterceptor());
         
         // Codificar la dirección para la URL
         final encodedAddress = Uri.encodeComponent(address);
@@ -425,6 +434,8 @@ class LocationService {
       // Si Mapbox falla, intentar con Nominatim
       try {
         final dio = Dio();
+        // Agregar interceptor para trackear uso de APIs
+        dio.interceptors.add(ApiUsageInterceptor());
         
         final response = await dio.get(
           'https://nominatim.openstreetmap.org/search',
@@ -472,6 +483,8 @@ class LocationService {
   Future<Map<String, dynamic>> _getRouteFromMapbox(List<List<double>> waypoints) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       // Construir string de coordenadas para la API
       final coordinatesString = waypoints.map((coord) => '${coord[0]},${coord[1]}').join(';');
@@ -512,6 +525,8 @@ class LocationService {
   ) async {
     try {
       final dio = Dio();
+      // Agregar interceptor para trackear uso de APIs
+      dio.interceptors.add(ApiUsageInterceptor());
       
       final coordinatesString = '${origin[0]},${origin[1]};${destination[0]},${destination[1]}';
       

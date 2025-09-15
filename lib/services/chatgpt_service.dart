@@ -2,11 +2,14 @@ import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 import 'location_service.dart';
 import 'navigation_service.dart';
+import 'api_interceptor.dart';
+import 'music_service.dart';
 
 class ChatGPTService {
   final Dio _dio = Dio();
   final LocationService _locationService = LocationService();
   final NavigationService _navigationService = NavigationService();
+  final MusicService _musicService = MusicService();
   final List<Map<String, String>> _conversationHistory = [];
 
   ChatGPTService() {
@@ -14,6 +17,9 @@ class ChatGPTService {
       'Authorization': 'Bearer ${AppConfig.openAiApiKey}',
       'Content-Type': 'application/json',
     };
+    
+    // Agregar interceptor para trackear uso de APIs
+    _dio.interceptors.add(ApiUsageInterceptor());
     
     _conversationHistory.add({
       'role': 'system',
@@ -24,6 +30,12 @@ class ChatGPTService {
   Future<String> sendMessage(String message) async {
     try {
       String enhancedMessage = message;
+      
+      // Debug: Verificar detección de consultas
+      print('🔍 Procesando mensaje: "$message"');
+      print('🎵 ¿Es consulta musical? ${_musicService.isMusicQuery(message)}');
+      print('🧭 ¿Es consulta de navegación? ${_isNavigationQuery(message)}');
+      print('📍 ¿Es consulta de ubicación? ${_isLocationQuery(message)}');
       
       // Comando de prueba para navegación
       if (message.toLowerCase().contains('probar navegación') || 
@@ -40,6 +52,19 @@ class ChatGPTService {
           enhancedMessage = '$message\n\nInformación de navegación: $navigationInfo';
         } catch (e) {
           enhancedMessage = '$message\n\nError al iniciar navegación: $e';
+        }
+      } else if (_musicService.isMusicQuery(message)) {
+        print('🎵 Procesando consulta musical directamente: $message');
+        
+        // Verificar si es un control de reproducción
+        if (_musicService.isPlaybackControl(message)) {
+          print('🎮 Procesando control de reproducción: $message');
+          final controlResult = await _musicService.processPlaybackControl(message);
+          return controlResult;
+        } else {
+          // Consulta musical normal (reproducir música)
+          final musicResult = await _musicService.processMusicalQuery(message);
+          return musicResult;
         }
       } else if (_isLocationQuery(message)) {
         try {

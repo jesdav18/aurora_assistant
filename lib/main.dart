@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'services/api_usage_tracker.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await ApiUsageTracker.initialize();
+  
   runApp(const AuroraAssistantApp());
 }
 

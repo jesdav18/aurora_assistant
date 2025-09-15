@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import '../config/app_config.dart';
+import 'api_interceptor.dart';
 
 class WhisperService {
   final Dio _dio = Dio();
@@ -9,6 +10,9 @@ class WhisperService {
     _dio.options.headers = {
       'Authorization': 'Bearer ${AppConfig.openAiApiKey}',
     };
+    
+    // Agregar interceptor para trackear uso de APIs
+    _dio.interceptors.add(ApiUsageInterceptor());
   }
 
   Future<String> transcribeAudio(String audioPath) async {

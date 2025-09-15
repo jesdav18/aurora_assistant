@@ -4,6 +4,7 @@ import '../services/whisper_service.dart';
 import '../services/chatgpt_service.dart';
 import '../services/tts_service.dart';
 import 'navigation_screen.dart';
+import 'usage_stats_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -178,6 +179,42 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: _openNavigationScreen,
               tooltip: 'Abrir navegación',
             ),
+          // Menú con opciones adicionales
+          PopupMenuButton<String>(
+            onSelected: _handleMenuAction,
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'stats',
+                child: Row(
+                  children: [
+                    Icon(Icons.analytics, color: Colors.blue),
+                    SizedBox(width: 8),
+                    Text('Estadísticas de APIs'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'clear_history',
+                child: Row(
+                  children: [
+                    Icon(Icons.clear_all, color: Colors.orange),
+                    SizedBox(width: 8),
+                    Text('Limpiar historial'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'about',
+                child: Row(
+                  children: [
+                    Icon(Icons.info, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text('Acerca de'),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       body: Padding(
@@ -266,6 +303,87 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 24),
           ],
         ),
+      ),
+    );
+  }
+
+  void _handleMenuAction(String action) async {
+    switch (action) {
+      case 'stats':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const UsageStatsScreen(),
+          ),
+        );
+        break;
+      case 'clear_history':
+        final confirm = await _showConfirmDialog(
+          'Limpiar historial',
+          '¿Estás seguro de que quieres limpiar el historial de conversación?',
+        );
+        if (confirm) {
+          _chatGPTService.clearHistory();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Historial limpiado'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        break;
+      case 'about':
+        _showAboutDialog();
+        break;
+    }
+  }
+
+  Future<bool> _showConfirmDialog(String title, String content) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Confirmar'),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Aurora Assistant'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Asistente de voz inteligente con navegación GPS'),
+            SizedBox(height: 12),
+            Text('Características:'),
+            Text('• Control por voz'),
+            Text('• Navegación GPS'),
+            Text('• Respuestas inteligentes'),
+            Text('• Estadísticas de uso'),
+            SizedBox(height: 12),
+            Text('Versión 1.0.0', style: TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cerrar'),
+          ),
+        ],
       ),
     );
   }
